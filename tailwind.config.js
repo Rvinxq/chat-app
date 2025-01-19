@@ -16,6 +16,7 @@ module.exports = {
         'bounce-soft': 'bounce-soft 2s infinite',
         'bounce-slow': 'bounce 3s infinite',
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'gradient-x': 'gradient-x 3s ease infinite',
       },
       keyframes: {
         aurora: {
@@ -55,6 +56,16 @@ module.exports = {
           '50%': {
             transform: 'translateY(0)',
             animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)',
+          },
+        },
+        'gradient-x': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
           },
         },
       },

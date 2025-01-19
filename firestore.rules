@@ -7,7 +7,8 @@ service cloud.firestore {
     }
     
     function isValidEmail() {
-      return request.auth.token.email.matches('.*@(gmail\\.com|outlook\\.com|hotmail\\.com)$');
+      return request.auth.token.email.matches('.*@(gmail\\.com|outlook\\.com|hotmail\\.com)$') 
+        || request.auth.token.firebase.sign_in_provider == 'google.com';
     }
     
     function isUsernameUnique(username) {
@@ -15,7 +16,8 @@ service cloud.firestore {
     }
 
     function isEmailVerified() {
-      return request.auth.token.email_verified;
+      return request.auth.token.email_verified 
+        || request.auth.token.firebase.sign_in_provider == 'google.com';
     }
 
     // Users collection

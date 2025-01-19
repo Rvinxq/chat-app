@@ -1,4 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useRef, useCallback } from 'react';
+import { db } from '../../utils/firebase';
+import { deleteDoc, doc } from 'firebase/firestore';
+import { toast } from 'react-hot-toast';
 
 // Array of visually distinct colors for usernames
 const USERNAME_COLORS = [
@@ -20,6 +23,51 @@ const USERNAME_COLORS = [
 ];
 
 const MessageList = ({ messages, currentUser, userData }) => {
+  const [selectedMessage, setSelectedMessage] = useState(null);
+  const longPressTimer = useRef(null);
+  const lastClickTime = useRef(0);
+  const touchStartTime = useRef(0);
+
+  const handleDelete = async (messageId) => {
+    try {
+      await deleteDoc(doc(db, 'public-chat', messageId));
+      toast.success('Message deleted');
+      setSelectedMessage(null);
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      toast.error('Failed to delete message');
+    }
+  };
+
+  const handleTouchStart = (message) => {
+    touchStartTime.current = Date.now();
+    longPressTimer.current = setTimeout(() => {
+      if (message.senderId === currentUser.uid) {
+        setSelectedMessage(message);
+      }
+    }, 500); // 500ms for long press
+  };
+
+  const handleTouchEnd = () => {
+    const pressDuration = Date.now() - touchStartTime.current;
+    if (pressDuration < 500) {
+      // If it was a short tap, clear the selection
+      setSelectedMessage(null);
+    }
+    clearTimeout(longPressTimer.current);
+  };
+
+  const handleClick = (message) => {
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastClickTime.current;
+
+    if (timeDiff < 300 && message.senderId === currentUser.uid) { // 300ms for double click
+      setSelectedMessage(message);
+    }
+
+    lastClickTime.current = currentTime;
+  };
+
   const formatTime = (timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleString('en-US', {
@@ -105,7 +153,16 @@ const MessageList = ({ messages, currentUser, userData }) => {
         console.log('Message sender:', message.senderId, 'User data:', userData?.[message.senderId]);
         
         return (
-          <div key={message.id} className="flex justify-start">
+          <div 
+            key={message.id} 
+            className={`flex justify-start relative ${
+              selectedMessage?.id === message.id ? 'bg-gray-100 dark:bg-gray-700 rounded-lg' : ''
+            }`}
+            onTouchStart={() => handleTouchStart(message)}
+            onTouchEnd={handleTouchEnd}
+            onClick={() => handleClick(message)}
+            onContextMenu={(e) => e.preventDefault()} // Prevent context menu on mobile
+          >
             <div className="max-w-[85%] md:max-w-[75%] px-1">
               {/* Time */}
               <div className="text-[10px] text-gray-500 dark:text-gray-400 mb-1">
@@ -127,6 +184,23 @@ const MessageList = ({ messages, currentUser, userData }) => {
                   renderMediaContent(message)
                 )}
               </div>
+
+              {/* Delete option */}
+              {selectedMessage?.id === message.id && message.senderId === currentUser.uid && (
+                <div className="absolute top-0 right-0 transform translate-x-full px-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(message.id);
+                    }}
+                    className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         );

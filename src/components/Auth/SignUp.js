@@ -7,6 +7,7 @@ import {
 import { doc, setDoc, getDoc, collection } from 'firebase/firestore';
 import { Link, useNavigate } from 'react-router-dom';
 import PasswordInput from './PasswordInput';
+import { toast } from 'react-hot-toast';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -50,6 +51,17 @@ const SignUp = () => {
         handleCodeInApp: true,
       });
 
+      // Show toast notification
+      toast.success('Verification email sent! Please check your inbox.', {
+        duration: 5000,
+        position: 'top-center',
+        style: {
+          background: '#10B981',
+          color: '#fff',
+          borderRadius: '10px',
+        },
+      });
+
       // Create user document with verification status
       await setDoc(doc(db, 'users', user.uid), {
         email: email,
@@ -69,6 +81,7 @@ const SignUp = () => {
     } catch (error) {
       console.error('Error during signup:', error);
       setError(error.message);
+      toast.error('Failed to send verification email. Please try again.');
     } finally {
       setLoading(false);
     }

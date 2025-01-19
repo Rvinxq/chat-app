@@ -10,6 +10,7 @@ import Header from './components/Layout/Header';
 import NotFound from './components/404/NotFound';
 import { ThemeProvider } from './context/ThemeContext';
 import VerifyEmail from './components/Auth/VerifyEmail';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const [user, loading] = useAuthState(auth);
@@ -37,6 +38,7 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
+        <Toaster />
         <div className="h-screen bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text transition-colors duration-300">
           {user && <Header currentUser={user} />}
           <Routes>

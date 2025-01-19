@@ -21,16 +21,6 @@ const SignUp = () => {
     setLoading(true);
     setError('');
 
-    // Check email domain
-    const allowedDomains = ['gmail.com', 'outlook.com', 'hotmail.com'];
-    const emailDomain = email.split('@')[1].toLowerCase();
-    
-    if (!allowedDomains.includes(emailDomain)) {
-      setError('Only Gmail, Outlook, and Hotmail accounts are allowed');
-      setLoading(false);
-      return;
-    }
-
     try {
       // Check if username exists
       const usernameDoc = await getDoc(doc(db, 'usernames', username.toLowerCase()));
@@ -61,7 +51,7 @@ const SignUp = () => {
         },
       });
 
-      // Create user document with verification status
+      // Create user document
       await setDoc(doc(db, 'users', user.uid), {
         email: email,
         username: username,

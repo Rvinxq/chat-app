@@ -11,9 +11,12 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        // Make sure to reload user to get latest emailVerified status
         await user.reload();
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
       }
-      setCurrentUser(user);
       setLoading(false);
     });
 

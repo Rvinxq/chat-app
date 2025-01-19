@@ -5,6 +5,7 @@ import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import FileUpload from './FileUpload';
 import WelcomeModal from './WelcomeModal';
+import { auth } from '../../utils/firebase';
 
 const ChatWindow = ({ currentUser }) => {
   const [messages, setMessages] = useState([]);

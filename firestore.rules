@@ -18,18 +18,19 @@ service cloud.firestore {
       return request.auth.token.email_verified;
     }
 
+    // Public chat messages
+    match /public-chat/{messageId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if false;
+      allow delete: if false;
+    }
+
     // Users collection
     match /users/{userId} {
       allow read: if true;
-      allow create: if isAuthenticated() 
-                   && isValidEmail()
-                   && isUsernameUnique(request.resource.data.username);
-      allow update: if isAuthenticated() 
-                   && request.auth.uid == userId
-                   && (
-                     !request.resource.data.diff(resource.data).affectedKeys().hasAny(['username'])
-                     || isUsernameUnique(request.resource.data.username)
-                   );
+      allow create: if isAuthenticated() && isValidEmail();
+      allow update: if isAuthenticated() && request.auth.uid == userId;
       allow delete: if false;
     }
 
@@ -38,14 +39,6 @@ service cloud.firestore {
       allow read: if true;
       allow create, delete: if isAuthenticated() 
                            && request.auth.uid == request.resource.data.uid;
-    }
-
-    // Public chat messages
-    match /public-chat/{messageId} {
-      allow read: if true;
-      allow create: if isAuthenticated() && isEmailVerified();
-      allow update: if false;
-      allow delete: if false;
     }
 
     // Allow read access to all collections for debugging

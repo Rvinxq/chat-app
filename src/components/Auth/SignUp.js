@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { auth, db } from '../../utils/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection } from 'firebase/firestore';
 import { Link, useNavigate } from 'react-router-dom';
 import PasswordInput from './PasswordInput';
 
@@ -13,36 +13,63 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSignUp = async (email, password, username) => {
+    setLoading(true);
+    setError('');
+
+    // Check email domain
+    const allowedDomains = ['gmail.com', 'outlook.com', 'hotmail.com'];
+    const emailDomain = email.split('@')[1].toLowerCase();
+    
+    if (!allowedDomains.includes(emailDomain)) {
+      setError('Only Gmail, Outlook, and Hotmail accounts are allowed');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Check if username exists
+      const usernameDoc = await getDoc(doc(db, 'usernames', username.toLowerCase()));
+      if (usernameDoc.exists()) {
+        setError('Username is already taken');
+        setLoading(false);
+        return;
+      }
+
+      // Create user
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Create user document
+      await setDoc(doc(db, 'users', user.uid), {
+        email: email,
+        username: username,
+        createdAt: new Date().toISOString()
+      });
+
+      // Reserve username
+      await setDoc(doc(db, 'usernames', username.toLowerCase()), {
+        uid: user.uid,
+        username: username
+      });
+
+      navigate('/');
+    } catch (error) {
+      console.error('Error during signup:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!email || !password || !username) {
       setError('Please fill in all fields');
       return;
     }
 
-    try {
-      setError('');
-      setLoading(true);
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
-      await setDoc(doc(db, 'users', userCredential.user.uid), {
-        username,
-        email,
-        createdAt: new Date().toISOString(),
-      });
-
-      navigate('/');
-    } catch (error) {
-      setError(
-        error.code === 'auth/email-already-in-use'
-          ? 'Email already in use'
-          : error.code === 'auth/weak-password'
-          ? 'Password should be at least 6 characters'
-          : 'Failed to create account'
-      );
-    } finally {
-      setLoading(false);
-    }
+    handleSignUp(email, password, username);
   };
 
   return (

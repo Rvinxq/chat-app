@@ -1,23 +1,44 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Basic authentication check
+    // Helper functions
     function isAuthenticated() {
       return request.auth != null;
+    }
+    
+    function isValidEmail() {
+      return request.auth.token.email.matches('.*@(gmail\\.com|outlook\\.com|hotmail\\.com)$');
+    }
+    
+    function isUsernameUnique(username) {
+      return !exists(/databases/$(database)/documents/usernames/$(username));
     }
 
     // Users collection
     match /users/{userId} {
-      allow read: if true;  // Allow public read
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && 
-                   request.auth.uid == userId;
+      allow read: if true;
+      allow create: if isAuthenticated() 
+                   && isValidEmail()
+                   && isUsernameUnique(request.resource.data.username);
+      allow update: if isAuthenticated() 
+                   && request.auth.uid == userId
+                   && (
+                     !request.resource.data.diff(resource.data).affectedKeys().hasAny(['username'])
+                     || isUsernameUnique(request.resource.data.username)
+                   );
       allow delete: if false;
+    }
+
+    // Usernames collection for uniqueness check
+    match /usernames/{username} {
+      allow read: if true;
+      allow create, delete: if isAuthenticated() 
+                           && request.auth.uid == request.resource.data.uid;
     }
 
     // Public chat messages
     match /public-chat/{messageId} {
-      allow read: if true;  // Allow public read
+      allow read: if true;
       allow create: if isAuthenticated();
       allow update: if false;
       allow delete: if false;

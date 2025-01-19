@@ -47,33 +47,40 @@ const MessageList = ({ messages, currentUser, userData }) => {
   }, [messages]);
 
   return (
-    <div className="space-y-2 md:space-y-3">
+    <div className="space-y-4">
       {messages.map((message) => {
         // Add debug log for each message
         console.log('Message sender:', message.senderId, 'User data:', userData?.[message.senderId]);
         
         return (
-          <div key={message.id} className="flex justify-end">
-            <div className="max-w-[85%] md:max-w-[75%] rounded-2xl px-3 py-2 bg-blue-600 text-white">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-xs text-blue-100">
-                  {userData?.[message.senderId]?.username || 'User'}
-                </span>
-                <span className="text-[10px] text-blue-100">
-                  {formatTime(message.timestamp)}
-                </span>
+          <div key={message.id} className="flex justify-start">
+            <div className="max-w-[85%] md:max-w-[75%] px-1">
+              {/* Time */}
+              <div className="text-[10px] text-gray-500 dark:text-gray-400 mb-1">
+                {formatTime(message.timestamp)}
               </div>
-              {message.type === 'text' && (
-                <p className="text-sm md:text-base break-words">{message.content}</p>
-              )}
-              {message.type === 'image' && (
-                <img 
-                  src={message.content} 
-                  alt="Shared" 
-                  className="max-w-full rounded-lg"
-                  loading="lazy"
-                />
-              )}
+
+              {/* Username */}
+              <div className={`text-xs font-medium mb-1 ${userColors.get(message.senderId) || 'text-gray-600'}`}>
+                {userData?.[message.senderId]?.username || 'User'}
+              </div>
+
+              {/* Message Content */}
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-2">
+                {message.type === 'text' && (
+                  <p className="text-sm md:text-base break-words text-gray-800 dark:text-gray-200">
+                    {message.content}
+                  </p>
+                )}
+                {message.type === 'image' && (
+                  <img 
+                    src={message.content} 
+                    alt="Shared" 
+                    className="max-w-full rounded-lg"
+                    loading="lazy"
+                  />
+                )}
+              </div>
             </div>
           </div>
         );

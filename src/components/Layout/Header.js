@@ -64,16 +64,16 @@ const Header = ({ currentUser }) => {
     <div className="fixed top-0 left-0 right-0 z-50 h-14 sm:h-16">
       <header className="h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800">
         <div className="h-full px-2 sm:px-4 flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex-shrink-0 fixed left-2 sm:left-4">
+          <div className="fixed left-2 sm:left-4">
             <Logo size="small" className="transform scale-75 sm:scale-90" />
           </div>
 
-          <div className="flex items-center gap-0.5 sm:gap-3 ml-auto">
+          <div className="fixed right-2 sm:right-4 flex items-center gap-2 sm:gap-4">
             <div className="block">
               <ThemeToggle />
             </div>
 
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
               {isEditing ? (
                 <form 
                   onSubmit={handleUpdateUsername}
@@ -95,7 +95,7 @@ const Header = ({ currentUser }) => {
                   </button>
                 </form>
               ) : (
-                <div className="flex items-center gap-0.5 sm:gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   <span className="text-xs font-medium text-gray-700 dark:text-gray-300 max-w-[80px] sm:max-w-[150px] truncate">
                     {currentUsername || 'Loading...'}
                   </span>
@@ -112,7 +112,7 @@ const Header = ({ currentUser }) => {
 
               <button
                 onClick={handleLogout}
-                className="ml-0.5 sm:ml-2 p-1 sm:p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="p-1 sm:p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 <svg className="w-3.5 h-3.5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

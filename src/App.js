@@ -15,36 +15,69 @@ import AdminPage from './components/Admin/AdminPage';
 
 // Security utility function
 const secureApp = () => {
-  // Disable right-click
-  document.addEventListener('contextmenu', (e) => e.preventDefault());
+  const redirectToError = () => {
+    window.location.href = '/error';
+    return false;
+  };
 
-  // Disable keyboard shortcuts
+  // Continuous monitoring for dev tools
+  const devToolsCheck = () => {
+    const threshold = 160;
+    
+    // Check for dev tools being open
+    if (
+      window.outerWidth - window.innerWidth > threshold ||
+      window.outerHeight - window.innerHeight > threshold ||
+      window.Firebug?.chrome?.isInitialized ||
+      /Chrome/.test(window.navigator.userAgent) && /Google Inc/.test(window.navigator.vendor) && window.__REACT_DEVTOOLS_GLOBAL_HOOK__
+    ) {
+      redirectToError();
+    }
+
+    // Detect console opening
+    const checkConsole = () => {
+      const startTime = new Date();
+      debugger;
+      const endTime = new Date();
+      if (endTime - startTime > 100) {
+        redirectToError();
+      }
+    };
+
+    // Regular checks
+    setInterval(checkConsole, 1000);
+    setInterval(devToolsCheck, 1000);
+  };
+
+  devToolsCheck();
+
+  // Existing protections
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
   document.addEventListener('keydown', (e) => {
     if (
-      // Prevent F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
       e.key === 'F12' ||
       (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
       (e.ctrlKey && e.key === 'U')
     ) {
       e.preventDefault();
+      redirectToError();
     }
   });
 
-  // Disable source view
-  document.addEventListener('keypress', (e) => {
-    if (e.ctrlKey && e.key === 'u') e.preventDefault();
-  });
+  // Override console methods
+  const consoleOverrides = () => {
+    const noop = () => redirectToError();
+    ['log', 'info', 'warn', 'error', 'debug', 'clear'].forEach(method => {
+      console[method] = noop;
+    });
+  };
 
-  // Clear console
-  console.clear();
-  
-  // Disable console in production
-  if (process.env.NODE_ENV === 'production') {
-    console.log = () => {};
-    console.error = () => {};
-    console.warn = () => {};
-    console.info = () => {};
-  }
+  consoleOverrides();
+
+  // Detect debugger
+  setInterval(() => {
+    debugger;
+  }, 100);
 };
 
 function App() {
@@ -109,6 +142,17 @@ function App() {
             <Route
               path="/admin"
               element={user ? <AdminPage /> : <Navigate to="/login" />}
+            />
+            <Route 
+              path="/error" 
+              element={
+                <div className="min-h-screen flex items-center justify-center bg-red-600">
+                  <div className="text-white text-center">
+                    <h1 className="text-4xl font-bold mb-4">Access Denied</h1>
+                    <p>Developer tools are not allowed on this site.</p>
+                  </div>
+                </div>
+              } 
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -79,7 +79,22 @@ const SignUp = () => {
 
     } catch (error) {
       console.error('Error during signup:', error);
-      setError(error.message);
+      
+      // Customize error messages
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          setError('Email already exists');
+          break;
+        case 'auth/weak-password':
+          setError('Password should be at least 6 characters');
+          break;
+        case 'auth/invalid-email':
+          setError('Invalid email format');
+          break;
+        default:
+          setError('Failed to create account. Please try again.');
+      }
+      
       toast.error('Failed to send verification email. Please try again.');
     } finally {
       setLoading(false);

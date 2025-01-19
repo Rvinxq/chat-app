@@ -64,12 +64,12 @@ const Header = ({ currentUser }) => {
     <div className="fixed top-0 left-0 right-0 z-50 h-14 sm:h-16">
       <header className="h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800">
         <div className="h-full px-2 sm:px-4 flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 fixed left-2 sm:left-4">
             <Logo size="small" className="transform scale-75 sm:scale-90" />
           </div>
 
-          <div className="flex items-center gap-0.5 sm:gap-3">
-            <div className="hidden sm:block">
+          <div className="flex items-center gap-0.5 sm:gap-3 ml-auto">
+            <div className="block">
               <ThemeToggle />
             </div>
 

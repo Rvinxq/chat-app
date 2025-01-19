@@ -52,8 +52,8 @@ const ThemeToggle = () => {
         </div>
       </button>
       
-      {/* Mode Text */}
-      <span className="mt-1 text-xs font-medium text-white/70 dark:text-white/70 transition-colors duration-200">
+      {/* Updated text color */}
+      <span className="mt-1 text-xs font-medium text-gray-800 dark:text-white/70 transition-colors duration-200">
         {isDark ? 'Dark Mode' : 'Light Mode'}
       </span>
     </div>

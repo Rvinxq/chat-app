@@ -5,8 +5,8 @@ const Logo = ({ size = 'normal', className = '' }) => {
   const textSize = size === 'large' ? 'text-4xl' : 'text-lg md:text-2xl';
   
   return (
-    <div className={`flex items-center space-x-2 md:space-x-4 ${className}`}>
-      <div className={`relative ${logoSize}`}>
+    <div className={`flex items-center space-x-2 md:space-x-4 whitespace-nowrap ${className}`}>
+      <div className={`relative flex-shrink-0 ${logoSize}`}>
         <div className="absolute inset-0 bg-blue-900/70 rounded-xl transform rotate-45 backdrop-blur-sm border border-blue-800/60 shadow-lg animate-float"></div>
         <div className="absolute inset-0 flex items-center justify-center">
           <svg 
@@ -23,7 +23,7 @@ const Logo = ({ size = 'normal', className = '' }) => {
           </svg>
         </div>
       </div>
-      <div className="relative">
+      <div className="relative flex-shrink-0">
         <span className={`${textSize} font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-aurora relative z-10`}>
           ChatBuddy
         </span>

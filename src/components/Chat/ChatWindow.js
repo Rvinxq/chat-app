@@ -85,15 +85,27 @@ const ChatWindow = ({ currentUser }) => {
       setMessages(messageList);
 
       // Fetch user data for all unique senders
-      try {
-        const userIds = [...new Set(messageList.map(msg => msg.senderId))];
-        const userDataPromises = userIds.map(async userId => {
-          if (!userId) return null;
-          const userDocRef = doc(db, 'users', userId);
+      const userIds = [...new Set(messageList.map(msg => msg.senderId))];
+      const userDataPromises = userIds.map(async userId => {
+        if (!userId) return null;
+        const userDocRef = doc(db, 'users', userId);
+        try {
           const userDocSnap = await getDoc(userDocRef);
-          return userDocSnap.exists() ? { userId, ...userDocSnap.data() } : null;
-        });
-        
+          if (userDocSnap.exists()) {
+            return {
+              userId,
+              username: userDocSnap.data().username,
+              ...userDocSnap.data()
+            };
+          }
+          return null;
+        } catch (error) {
+          console.error(`Error fetching user ${userId}:`, error);
+          return null;
+        }
+      });
+
+      try {
         const users = (await Promise.all(userDataPromises)).filter(Boolean);
         const userDataMap = {};
         users.forEach(user => {
@@ -101,9 +113,10 @@ const ChatWindow = ({ currentUser }) => {
             userDataMap[user.userId] = user;
           }
         });
+        console.log('User data map:', userDataMap); // Debug log
         setUserData(userDataMap);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error processing user data:', error);
       }
     });
 
@@ -216,6 +229,7 @@ const ChatWindow = ({ currentUser }) => {
           <MessageList 
             messages={messages} 
             currentUser={currentUser}
+            userData={userData}
           />
           <div ref={messagesEndRef} />
         </div>

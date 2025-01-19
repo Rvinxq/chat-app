@@ -20,6 +20,9 @@ const USERNAME_COLORS = [
 ];
 
 const MessageList = ({ messages, currentUser, userData }) => {
+  // Add debug log
+  console.log('MessageList userData:', userData);
+
   // Create a map of user IDs to colors
   const userColors = useMemo(() => {
     const colorMap = new Map();
@@ -37,33 +40,38 @@ const MessageList = ({ messages, currentUser, userData }) => {
 
   return (
     <div className="space-y-2 md:space-y-3">
-      {messages.map((message) => (
-        <div
-          key={message.id}
-          className={`flex ${message.senderId === currentUser?.uid ? 'justify-end' : 'justify-start'}`}
-        >
-          <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl px-3 py-2 ${
-            message.senderId === currentUser?.uid
-              ? 'bg-blue-600 text-white'
-              : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
-          }`}>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-              {(userData && userData[message.senderId]?.username) || 'User'}
+      {messages.map((message) => {
+        // Add debug log for each message
+        console.log('Message sender:', message.senderId, 'User data:', userData?.[message.senderId]);
+        
+        return (
+          <div
+            key={message.id}
+            className={`flex ${message.senderId === currentUser?.uid ? 'justify-end' : 'justify-start'}`}
+          >
+            <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl px-3 py-2 ${
+              message.senderId === currentUser?.uid
+                ? 'bg-blue-600 text-white'
+                : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
+            }`}>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                {userData?.[message.senderId]?.username || 'User'}
+              </div>
+              {message.type === 'text' && (
+                <p className="text-sm md:text-base break-words">{message.content}</p>
+              )}
+              {message.type === 'image' && (
+                <img 
+                  src={message.content} 
+                  alt="Shared" 
+                  className="max-w-full rounded-lg"
+                  loading="lazy"
+                />
+              )}
             </div>
-            {message.type === 'text' && (
-              <p className="text-sm md:text-base break-words">{message.content}</p>
-            )}
-            {message.type === 'image' && (
-              <img 
-                src={message.content} 
-                alt="Shared" 
-                className="max-w-full rounded-lg"
-                loading="lazy"
-              />
-            )}
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

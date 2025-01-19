@@ -98,6 +98,13 @@ module.exports = {
           text: '#0f172a',
         },
       },
+      appearance: {
+        none: {
+          appearance: 'none',
+          '-webkit-appearance': 'none',
+          '-moz-appearance': 'none'
+        }
+      }
     },
   },
   plugins: [],

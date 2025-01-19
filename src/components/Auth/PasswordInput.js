@@ -9,6 +9,10 @@ const PasswordInput = ({ value, onChange, placeholder = "Password", name = "pass
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
+    setDisplayValue(value);
+  }, [value]);
+
+  useEffect(() => {
     if (value.length > displayValue.length && isVisible) {
       // New character typed, reveal it with animation
       const newChar = value[value.length - 1];

@@ -39,7 +39,6 @@ const ChatWindow = ({ currentUser }) => {
   };
 
   useEffect(() => {
-    // Run cleanup every hour
     const cleanup = setInterval(cleanupOldMessages, 3600000);
     return () => clearInterval(cleanup);
   }, []);
@@ -122,17 +121,6 @@ const ChatWindow = ({ currentUser }) => {
 
     return () => unsubscribe();
   }, []);
-
-  const formatMessageTime = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-      month: 'short',
-      day: 'numeric'
-    });
-  };
 
   const startCooldown = () => {
     setIsOnCooldown(true);
@@ -217,6 +205,11 @@ const ChatWindow = ({ currentUser }) => {
     }
   };
 
+  useEffect(() => {
+    chatContainerRef.current?.addEventListener('scroll', handleScroll);
+    return () => chatContainerRef.current?.removeEventListener('scroll', handleScroll);
+  }, [isNearBottom]);
+
   return (
     <div className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900 pt-14 sm:pt-16">
       {/* Header */}
@@ -230,7 +223,6 @@ const ChatWindow = ({ currentUser }) => {
         <div 
           ref={chatContainerRef}
           className="flex-1 overflow-y-auto px-3 md:px-4 py-4 space-y-3 mb-[120px] sm:mb-[140px]"
-          onScroll={handleScroll}
         >
           <MessageList 
             messages={messages} 

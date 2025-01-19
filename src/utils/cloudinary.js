@@ -33,7 +33,9 @@ export const uploadToCloudinary = async (file) => {
   }
 };
 
-export default {
+const cloudinaryUtils = {
   uploadToCloudinary,
   cloudinaryConfig
-}; 
+};
+
+export default cloudinaryUtils; 

@@ -4,8 +4,8 @@ import {
   createUserWithEmailAndPassword, 
   sendEmailVerification 
 } from 'firebase/auth';
-import { doc, setDoc, getDoc, collection } from 'firebase/firestore';
-import { Link, useNavigate } from 'react-router-dom';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 import PasswordInput from './PasswordInput';
 import { toast } from 'react-hot-toast';
 
@@ -16,7 +16,6 @@ const SignUp = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
-  const navigate = useNavigate();
 
   const handleSignUp = async (email, password, username) => {
     setLoading(true);

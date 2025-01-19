@@ -7,20 +7,17 @@ const ADMIN_EMAIL = 'SwarnabhaX@gmail.com';
 const ADMIN_PASSWORD = 'Swarnabhasima123';
 
 const AdminPage = () => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  if (auth.currentUser?.email !== ADMIN_EMAIL) {
-    return <Navigate to="/" replace />;
-  }
-
   const handleAdminAuth = (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       toast.success('Admin access granted');
     } else {
-      toast.error('Invalid admin password');
+      toast.error('Invalid admin credentials');
     }
   };
 
@@ -31,6 +28,13 @@ const AdminPage = () => {
           <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-8">
             <h2 className="text-2xl font-bold text-white mb-6">Admin Authentication</h2>
             <form onSubmit={handleAdminAuth} className="space-y-4">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter admin email"
+                className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70"
+              />
               <input
                 type="password"
                 value={password}

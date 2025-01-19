@@ -201,14 +201,20 @@ const ChatWindow = ({ currentUser }) => {
       return;
     }
 
+    const isImage = fileUrl.match(/\.(jpg|jpeg|png|gif|webp)/i);
     const messageData = {
       content: fileUrl,
-      type: fileUrl.includes('/image/') ? 'image' : 'video',
+      type: isImage ? 'image' : 'video',
       senderId: currentUser.uid,
       timestamp: new Date().toISOString()
     };
 
-    await addDoc(collection(db, 'public-chat'), messageData);
+    try {
+      await addDoc(collection(db, 'public-chat'), messageData);
+    } catch (error) {
+      console.error('Error sending file message:', error);
+      alert('Failed to send file. Please try again.');
+    }
   };
 
   return (

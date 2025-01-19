@@ -76,9 +76,20 @@ const MessageList = ({ messages, currentUser, userData }) => {
                   <img 
                     src={message.content} 
                     alt="Shared" 
-                    className="max-w-full rounded-lg"
+                    className="max-w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
                     loading="lazy"
+                    onClick={() => window.open(message.content, '_blank')}
                   />
+                )}
+                {message.type === 'video' && (
+                  <video 
+                    src={message.content}
+                    controls
+                    className="max-w-full rounded-lg"
+                    preload="metadata"
+                  >
+                    Your browser does not support the video tag.
+                  </video>
                 )}
               </div>
             </div>

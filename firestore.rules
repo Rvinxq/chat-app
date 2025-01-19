@@ -8,9 +8,8 @@ service cloud.firestore {
 
     // Users collection
     match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && 
-                   request.auth.uid == userId;
+      allow read: if true;  // Allow public read
+      allow create: if isAuthenticated();
       allow update: if isAuthenticated() && 
                    request.auth.uid == userId;
       allow delete: if false;
@@ -18,11 +17,15 @@ service cloud.firestore {
 
     // Public chat messages
     match /public-chat/{messageId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && 
-                   request.resource.data.senderId == request.auth.uid;
+      allow read: if true;  // Allow public read
+      allow create: if isAuthenticated();
       allow update: if false;
       allow delete: if false;
+    }
+
+    // Allow read access to all collections for debugging
+    match /{document=**} {
+      allow read: if true;
     }
   }
 } 

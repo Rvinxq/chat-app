@@ -14,18 +14,26 @@ import { ThemeProvider } from './context/ThemeContext';
 function App() {
   const [user, loading] = useAuthState(auth);
   const [showLoading, setShowLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
     disableDevTools();
   }, []);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && isInitialLoad) {
+      // Start fading out the loading screen when auth is ready
+      const minLoadTime = 2000; // Minimum loading time of 2 seconds
+      const loadStartTime = Date.now();
+      
+      const remainingTime = Math.max(0, minLoadTime - (Date.now() - loadStartTime));
+      
       setTimeout(() => {
         setShowLoading(false);
-      }, 1000);
+        setIsInitialLoad(false);
+      }, remainingTime);
     }
-  }, [loading]);
+  }, [loading, isInitialLoad]);
 
   if (loading || showLoading) {
     return <LoadingScreen />;
@@ -34,7 +42,7 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="h-screen bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text transition-colors duration-300">
           {user && <Header currentUser={user} />}
           <Routes>
             <Route

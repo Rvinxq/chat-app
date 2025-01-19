@@ -20,8 +20,16 @@ const USERNAME_COLORS = [
 ];
 
 const MessageList = ({ messages, currentUser, userData }) => {
-  // Add debug log
-  console.log('MessageList userData:', userData);
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+      month: 'short',
+      day: 'numeric'
+    });
+  };
 
   // Create a map of user IDs to colors
   const userColors = useMemo(() => {
@@ -45,17 +53,15 @@ const MessageList = ({ messages, currentUser, userData }) => {
         console.log('Message sender:', message.senderId, 'User data:', userData?.[message.senderId]);
         
         return (
-          <div
-            key={message.id}
-            className={`flex ${message.senderId === currentUser?.uid ? 'justify-end' : 'justify-start'}`}
-          >
-            <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl px-3 py-2 ${
-              message.senderId === currentUser?.uid
-                ? 'bg-blue-600 text-white'
-                : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
-            }`}>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                {userData?.[message.senderId]?.username || 'User'}
+          <div key={message.id} className="flex justify-end">
+            <div className="max-w-[85%] md:max-w-[75%] rounded-2xl px-3 py-2 bg-blue-600 text-white">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs text-blue-100">
+                  {userData?.[message.senderId]?.username || 'User'}
+                </span>
+                <span className="text-[10px] text-blue-100">
+                  {formatTime(message.timestamp)}
+                </span>
               </div>
               {message.type === 'text' && (
                 <p className="text-sm md:text-base break-words">{message.content}</p>

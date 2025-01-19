@@ -53,15 +53,15 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-blue-700 to-purple-800">
-      <div className="max-w-md w-full mx-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-blue-700 to-purple-800 px-4">
+      <div className="w-full max-w-md">
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">
-          <div className="px-8 pt-8 pb-6 text-center">
-            <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
-            <p className="text-blue-100/80">Sign in to continue to ChatLings</p>
+          <div className="px-6 md:px-8 pt-6 md:pt-8 pb-4 md:pb-6 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Welcome Back</h2>
+            <p className="text-sm md:text-base text-blue-100/80">Sign in to continue to ChatBuddy</p>
           </div>
           
-          <div className="bg-white p-8 rounded-t-3xl shadow-inner">
+          <div className="bg-white p-6 md:p-8 rounded-t-3xl shadow-inner">
             {error && (
               <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
                 <p className="text-red-700 text-sm">{error}</p>

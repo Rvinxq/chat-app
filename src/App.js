@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './utils/firebase';
 import LoadingScreen from './components/Layout/LoadingScreen';
-import { enableDevToolsProtection } from './utils/devToolsProtection';
+import disableDevTools from './utils/devToolsProtection';
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
 import ChatWindow from './components/Chat/ChatWindow';
@@ -17,8 +17,7 @@ function App() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
-    const cleanup = enableDevToolsProtection();
-    return () => cleanup();
+    disableDevTools();
   }, []);
 
   useEffect(() => {

@@ -51,7 +51,7 @@ const SignUp = () => {
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">
           <div className="px-8 pt-8 pb-6 text-center">
             <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
-            <p className="text-blue-100/80">Join Casonova today</p>
+            <p className="text-blue-100/80">Join ChatBuddy today</p>
           </div>
           
           <div className="bg-white p-8 rounded-t-3xl shadow-inner">

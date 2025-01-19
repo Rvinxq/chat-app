@@ -191,54 +191,52 @@ const ChatWindow = ({ currentUser }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen pt-24">
-      <div className="bg-gradient-to-r from-blue-900/90 to-blue-800/90 dark:from-slate-900/90 dark:to-slate-800/90 text-white p-3 rounded-b-2xl shadow-lg backdrop-blur-sm">
-        <div className="flex items-center space-x-3">
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <div>
-            <h2 className="text-lg font-bold">Public Chat Room</h2>
-            <p className="text-xs text-blue-200/80 dark:text-slate-300/80">Messages are kept for 12 hours</p>
-          </div>
-        </div>
+    <div className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900 pt-14 sm:pt-16">
+      {/* Header */}
+      <div className="fixed top-14 sm:top-16 left-0 right-0 px-4 py-2 sm:py-3 bg-white dark:bg-gray-800 shadow-sm z-40">
+        <h2 className="text-base sm:text-lg font-semibold">Public Chat</h2>
+        <p className="text-[10px] sm:text-xs text-gray-500">Messages are end-to-end encrypted</p>
       </div>
-      <div 
-        ref={chatContainerRef}
-        className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-800 p-3 space-y-2 max-w-5xl mx-auto w-full transition-colors duration-300"
-        onScroll={handleScroll}
-      >
-        <MessageList 
-          messages={messages} 
-          currentUser={currentUser} 
-          userData={userData}
-          formatTime={formatMessageTime} 
-        />
-        <div ref={messagesEndRef} />
-      </div>
-      {!isNearBottom && unreadCount > 0 && (
+
+      {/* Messages area - adjusted top padding to account for fixed header */}
+      <div className="flex-1 overflow-hidden flex flex-col mt-14 sm:mt-16">
         <div 
-          className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-blue-600 dark:bg-blue-500 text-white px-3 py-1.5 rounded-full cursor-pointer shadow-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-200 flex items-center space-x-2 text-sm"
-          onClick={scrollToBottom}
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto px-3 md:px-4 py-4 space-y-3"
+          onScroll={handleScroll}
         >
-          <span className="animate-bounce">↓</span>
-          <span>{unreadCount} new message{unreadCount > 1 ? 's' : ''}</span>
+          <MessageList 
+            messages={messages} 
+            currentUser={currentUser}
+          />
+          <div ref={messagesEndRef} />
         </div>
-      )}
-      <div className="border-t border-gray-200 dark:border-gray-700 p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm transition-colors duration-300">
-        {isOnCooldown && (
-          <div className="bg-red-500/10 text-red-600 dark:text-red-400 text-center mb-1.5 py-1 px-2 rounded-lg border border-red-200 dark:border-red-500/20 text-xs">
-            <span className="font-medium">Slow down!</span>
-            <span className="ml-1.5">Please wait {cooldownTime}s</span>
+
+        {/* New messages indicator */}
+        {!isNearBottom && unreadCount > 0 && (
+          <div 
+            onClick={scrollToBottom}
+            className="fixed bottom-16 sm:bottom-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1.5 rounded-full shadow-lg cursor-pointer hover:bg-blue-700 z-40 flex items-center space-x-2 text-xs sm:text-sm"
+          >
+            <span>New messages</span>
+            <span className="bg-white text-blue-600 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-[10px] sm:text-xs font-medium">
+              {unreadCount}
+            </span>
           </div>
         )}
-        <div className="max-w-3xl mx-auto space-y-1.5">
-          <FileUpload 
-            onFileUpload={handleFileUpload} 
-            disabled={isOnCooldown}
-          />
-          <MessageInput 
-            onSendMessage={handleSendMessage} 
-            disabled={isOnCooldown}
-          />
+
+        {/* Input area */}
+        <div className="p-2 md:p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+          <div className="max-w-4xl mx-auto space-y-2">
+            <FileUpload 
+              onFileUpload={handleFileUpload} 
+              disabled={isOnCooldown}
+            />
+            <MessageInput 
+              onSendMessage={handleSendMessage} 
+              disabled={isOnCooldown}
+            />
+          </div>
         </div>
       </div>
     </div>

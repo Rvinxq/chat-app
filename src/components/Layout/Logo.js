@@ -1,17 +1,17 @@
 import React from 'react';
 
-const Logo = ({ size = 'normal' }) => {
-  const logoSize = size === 'large' ? 'w-16 h-16' : 'w-10 h-10';
-  const textSize = size === 'large' ? 'text-4xl' : 'text-2xl';
+const Logo = ({ size = 'normal', className = '' }) => {
+  const logoSize = size === 'large' ? 'w-16 h-16' : 'w-8 h-8 md:w-10 md:h-10';
+  const textSize = size === 'large' ? 'text-4xl' : 'text-lg md:text-2xl';
   
   return (
-    <div className="flex items-center space-x-4">
+    <div className={`flex items-center space-x-2 md:space-x-4 ${className}`}>
       <div className={`relative ${logoSize}`}>
         <div className="absolute inset-0 bg-blue-900/70 rounded-xl transform rotate-45 backdrop-blur-sm border border-blue-800/60 shadow-lg animate-float"></div>
         <div className="absolute inset-0 flex items-center justify-center">
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            className={`${size === 'large' ? 'h-10 w-10' : 'h-6 w-6'} text-blue-100 drop-shadow-lg`}
+            className={`${size === 'large' ? 'h-10 w-10' : 'h-4 w-4 md:h-6 md:w-6'} text-blue-100 drop-shadow-lg`}
             viewBox="0 0 20 20" 
             fill="currentColor"
           >
@@ -25,7 +25,7 @@ const Logo = ({ size = 'normal' }) => {
       </div>
       <div className="relative">
         <span className={`${textSize} font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-aurora relative z-10`}>
-          ChatLings
+          ChatBuddy
         </span>
         <div className="aurora-blur absolute inset-0 -inset-x-4 blur-2xl bg-gradient-to-r from-cyan-500/50 via-blue-500/50 to-purple-500/50 animate-aurora-blur"></div>
       </div>

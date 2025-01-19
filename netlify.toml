@@ -1,6 +1,12 @@
 [build]
-  command = "npm run build"
+  base = "/"
+  command = "CI= npm install && npm run build"
   publish = "build"
+  ignore = "git diff --quiet HEAD^ HEAD ./"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
 
 [[redirects]]
   from = "/static/*"

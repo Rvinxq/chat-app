@@ -1,78 +1,42 @@
-export const enableDevToolsProtection = () => {
-  const handleKeyDown = (e) => {
-    // Prevent Ctrl+U, Ctrl+Shift+I, F12, Ctrl+Shift+J, Ctrl+Shift+C
-    if (
-      (e.ctrlKey && e.keyCode === 85) || // Ctrl+U
-      (e.ctrlKey && e.shiftKey && e.keyCode === 73) || // Ctrl+Shift+I
-      e.keyCode === 123 || // F12
-      (e.ctrlKey && e.shiftKey && e.keyCode === 74) || // Ctrl+Shift+J
-      (e.ctrlKey && e.shiftKey && e.keyCode === 67) // Ctrl+Shift+C
-    ) {
+const disableDevTools = () => {
+  // Disable right-click
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+  // Disable keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    // Disable F12
+    if (e.keyCode === 123) e.preventDefault();
+    
+    // Disable Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+    if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
       e.preventDefault();
     }
-  };
+    
+    // Disable Ctrl+U
+    if (e.ctrlKey && e.keyCode === 85) e.preventDefault();
+  });
 
-  // Prevent right-click inspect
-  const handleContextMenu = (e) => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-      return true; // Allow right-click on input fields
-    }
-    const selection = window.getSelection().toString();
-    if (selection.length > 0) {
-      return true; // Allow right-click on text selection
-    }
-    if (e.target.closest('.allow-context-menu')) {
-      return true; // Allow right-click on elements with this class
-    }
-    const menuItems = ['inspect', 'inspect element', 'view page source'];
-    if (menuItems.includes(e.target.textContent.toLowerCase())) {
-      e.preventDefault();
-    }
-  };
-
-  // Detect and prevent DevTools
+  // Detect DevTools
   const detectDevTools = () => {
     const widthThreshold = window.outerWidth - window.innerWidth > 160;
     const heightThreshold = window.outerHeight - window.innerHeight > 160;
+    
     if (widthThreshold || heightThreshold) {
-      document.body.innerHTML = 'Developer tools are not allowed on this site.';
-      window.location.reload();
+      document.body.innerHTML = 'DevTools detected. Access denied.';
     }
   };
 
-  // Prevent debugging
-  const preventDebugging = () => {
-    setInterval(() => {
-      debugger;
-    }, 100);
+  // Clear console
+  const clearConsole = () => {
+    console.clear();
+    console.log = () => {};
+    console.warn = () => {};
+    console.error = () => {};
   };
 
-  // Add all event listeners
-  document.addEventListener('keydown', handleKeyDown);
-  document.addEventListener('contextmenu', handleContextMenu);
   window.addEventListener('resize', detectDevTools);
-  preventDebugging();
+  setInterval(detectDevTools, 1000);
+  clearConsole();
+};
 
-  // Disable console methods
-  const disableConsole = () => {
-    const noop = () => undefined;
-    const methods = [
-      'debug', 'error', 'info', 'log', 'warn', 'dir', 'dirxml', 'table',
-      'trace', 'group', 'groupCollapsed', 'groupEnd', 'clear', 'count',
-      'countReset', 'assert', 'profile', 'profileEnd', 'time', 'timeLog',
-      'timeEnd', 'timeStamp', 'context', 'memory'
-    ];
-    methods.forEach((method) => {
-      console[method] = noop;
-    });
-  };
-
-  disableConsole();
-
-  // Return cleanup function
-  return () => {
-    document.removeEventListener('keydown', handleKeyDown);
-    document.removeEventListener('contextmenu', handleContextMenu);
-    window.removeEventListener('resize', detectDevTools);
-  };
-}; 
+export default disableDevTools; 

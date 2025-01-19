@@ -84,19 +84,27 @@ const ChatWindow = ({ currentUser }) => {
       }));
       setMessages(messageList);
 
-      const userIds = [...new Set(messageList.map(msg => msg.senderId))];
-      const userDataPromises = userIds.map(async userId => {
-        const userDocRef = doc(db, 'users', userId);
-        const userDocSnap = await getDoc(userDocRef);
-        return { userId, ...userDocSnap.data() };
-      });
-      
-      const users = await Promise.all(userDataPromises);
-      const userDataMap = {};
-      users.forEach(user => {
-        userDataMap[user.userId] = user;
-      });
-      setUserData(userDataMap);
+      // Fetch user data for all unique senders
+      try {
+        const userIds = [...new Set(messageList.map(msg => msg.senderId))];
+        const userDataPromises = userIds.map(async userId => {
+          if (!userId) return null;
+          const userDocRef = doc(db, 'users', userId);
+          const userDocSnap = await getDoc(userDocRef);
+          return userDocSnap.exists() ? { userId, ...userDocSnap.data() } : null;
+        });
+        
+        const users = (await Promise.all(userDataPromises)).filter(Boolean);
+        const userDataMap = {};
+        users.forEach(user => {
+          if (user && user.userId) {
+            userDataMap[user.userId] = user;
+          }
+        });
+        setUserData(userDataMap);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
     });
 
     return () => unsubscribe();

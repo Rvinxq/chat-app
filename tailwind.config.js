@@ -16,6 +16,8 @@ module.exports = {
         'bounce-soft': 'bounce-soft 2s infinite',
         'bounce-slow': 'bounce 3s infinite',
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'glow': 'glow 2s ease-in-out infinite',
+        'sparkle': 'sparkle 1s linear forwards',
       },
       keyframes: {
         aurora: {
@@ -56,6 +58,15 @@ module.exports = {
             transform: 'translateY(0)',
             animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)',
           },
+        },
+        glow: {
+          '0%, 100%': { filter: 'brightness(100%)' },
+          '50%': { filter: 'brightness(150%)' },
+        },
+        sparkle: {
+          '0%': { transform: 'scale(0) rotate(0deg)', opacity: 0 },
+          '50%': { transform: 'scale(1) rotate(180deg)', opacity: 1 },
+          '100%': { transform: 'scale(0) rotate(360deg)', opacity: 0 },
         },
       },
       colors: {

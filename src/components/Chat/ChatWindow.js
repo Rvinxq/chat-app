@@ -212,15 +212,15 @@ const ChatWindow = ({ currentUser }) => {
   };
 
   return (
-    <div className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900 pt-14 sm:pt-16">
       {/* Header */}
-      <div className="fixed top-14 sm:top-16 left-0 right-0 px-4 py-2 sm:py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-sm z-30">
+      <div className="fixed top-14 sm:top-16 left-0 right-0 px-4 py-2 sm:py-3 bg-white dark:bg-gray-800 shadow-sm z-40">
         <h2 className="text-base sm:text-lg font-semibold">Public Chat</h2>
         <p className="text-[10px] sm:text-xs text-gray-500">Messages are end-to-end encrypted</p>
       </div>
 
       {/* Messages area */}
-      <div className="flex-1 overflow-hidden flex flex-col pt-14 sm:pt-16">
+      <div className="flex-1 overflow-hidden flex flex-col">
         <div 
           ref={chatContainerRef}
           className="flex-1 overflow-y-auto px-3 md:px-4 py-4 space-y-3 mb-[120px] sm:mb-[140px]"
@@ -236,10 +236,10 @@ const ChatWindow = ({ currentUser }) => {
 
         {/* New messages indicator */}
         {!isNearBottom && unreadCount > 0 && (
-          <div className="fixed bottom-[130px] sm:bottom-[150px] left-0 right-0 flex justify-center z-40">
+          <div className="fixed bottom-[90px] sm:bottom-[100px] left-0 right-0 flex justify-center pointer-events-none z-40">
             <div 
               onClick={scrollToBottom}
-              className="bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 animate-bounce-soft flex items-center space-x-2 group z-40"
+              className="pointer-events-auto transform hover:scale-105 bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 animate-bounce-soft flex items-center space-x-2 group"
             >
               {/* Glow effect */}
               <div className="absolute inset-0 rounded-full bg-blue-400 blur-md opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>

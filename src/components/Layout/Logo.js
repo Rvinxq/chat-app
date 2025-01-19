@@ -1,11 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Logo = ({ size = 'normal', className = '' }) => {
+  const [sparkles, setSparkles] = useState([]);
   const logoSize = size === 'large' ? 'w-16 h-16' : 'w-8 h-8 md:w-10 md:h-10';
   const textSize = size === 'large' ? 'text-4xl' : 'text-lg md:text-2xl';
   
+  // Generate random sparkles
+  const generateSparkle = () => ({
+    id: Math.random(),
+    size: Math.random() * 10 + 5,
+    style: {
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      animation: `sparkle ${Math.random() * 1 + 0.5}s linear`,
+    },
+  });
+
+  // Handle hover effect
+  const handleHover = () => {
+    const interval = setInterval(() => {
+      setSparkles(prev => [...prev, generateSparkle()]);
+    }, 50);
+
+    return () => clearInterval(interval);
+  };
+
+  // Clean up old sparkles
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSparkles(prev => prev.slice(1));
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [sparkles]);
+
   return (
-    <div className={`flex items-center space-x-2 md:space-x-4 whitespace-nowrap ${className}`}>
+    <div 
+      className={`flex items-center space-x-2 md:space-x-4 whitespace-nowrap ${className} group`}
+      onMouseEnter={handleHover}
+    >
       <div className={`relative flex-shrink-0 ${logoSize}`}>
         <div className="absolute inset-0 bg-blue-900/70 rounded-xl transform rotate-45 backdrop-blur-sm border border-blue-800/60 shadow-lg animate-float"></div>
         <div className="absolute inset-0 flex items-center justify-center">
@@ -24,10 +57,33 @@ const Logo = ({ size = 'normal', className = '' }) => {
         </div>
       </div>
       <div className="relative flex-shrink-0">
-        <span className={`${textSize} font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-aurora relative z-10`}>
+        {/* Sparkles container */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {sparkles.map(sparkle => (
+            <div
+              key={sparkle.id}
+              className="absolute w-1 h-1 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2"
+              style={sparkle.style}
+            />
+          ))}
+        </div>
+        
+        {/* Company name with glow effect */}
+        <span className={`
+          ${textSize} font-bold tracking-wider text-transparent bg-clip-text 
+          bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 
+          animate-aurora relative z-10 
+          group-hover:animate-glow transition-all duration-300
+        `}>
           ChatBuddy
         </span>
-        <div className="aurora-blur absolute inset-0 -inset-x-4 blur-2xl bg-gradient-to-r from-cyan-500/50 via-blue-500/50 to-purple-500/50 animate-aurora-blur"></div>
+        
+        {/* Enhanced glow effect on hover */}
+        <div className="
+          absolute inset-0 -inset-x-4 blur-2xl 
+          bg-gradient-to-r from-cyan-500/50 via-blue-500/50 to-purple-500/50 
+          opacity-0 group-hover:opacity-100 transition-opacity duration-300
+        "/>
       </div>
     </div>
   );

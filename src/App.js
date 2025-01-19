@@ -13,10 +13,60 @@ import VerifyEmail from './components/Auth/VerifyEmail';
 import { Toaster } from 'react-hot-toast';
 import AdminPage from './components/Admin/AdminPage';
 
+// Security utility function
+const secureApp = () => {
+  // Disable right-click
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+  // Disable keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (
+      // Prevent F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+      e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+      (e.ctrlKey && e.key === 'U')
+    ) {
+      e.preventDefault();
+    }
+  });
+
+  // Disable source view
+  document.addEventListener('keypress', (e) => {
+    if (e.ctrlKey && e.key === 'u') e.preventDefault();
+  });
+
+  // Clear console
+  console.clear();
+  
+  // Disable console in production
+  if (process.env.NODE_ENV === 'production') {
+    console.log = () => {};
+    console.error = () => {};
+    console.warn = () => {};
+    console.info = () => {};
+  }
+};
+
 function App() {
   const [user, loading] = useAuthState(auth);
   const [showLoading, setShowLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    secureApp();
+    
+    // Additional protection against dev tools
+    const detectDevTools = () => {
+      const widthThreshold = window.outerWidth - window.innerWidth > 160;
+      const heightThreshold = window.outerHeight - window.innerHeight > 160;
+      if (widthThreshold || heightThreshold) {
+        document.body.innerHTML = 'Dev tools detected!';
+      }
+    };
+
+    window.addEventListener('resize', detectDevTools);
+    return () => window.removeEventListener('resize', detectDevTools);
+  }, []);
 
   useEffect(() => {
     if (!loading && isInitialLoad) {
@@ -68,4 +118,6 @@ function App() {
   );
 }
 
+// Prevent component modification
+Object.freeze(App);
 export default App; 

@@ -23,11 +23,11 @@ const Logo = ({ size = 'normal', className = '' }) => {
           </svg>
         </div>
       </div>
-      <div className="relative flex-shrink-0">
-        <span className={`${textSize} font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-aurora relative z-10`}>
+      <div className="relative flex-shrink-0 group">
+        <span className={`${textSize} font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-aurora relative z-10 transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]`}>
           ChatBuddy
         </span>
-        <div className="aurora-blur absolute inset-0 -inset-x-4 blur-2xl bg-gradient-to-r from-cyan-500/50 via-blue-500/50 to-purple-500/50 animate-aurora-blur"></div>
+        <div className="aurora-blur absolute inset-0 -inset-x-4 blur-2xl bg-gradient-to-r from-cyan-500/50 via-blue-500/50 to-purple-500/50 animate-aurora-blur opacity-50 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
     </div>
   );

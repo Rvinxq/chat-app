@@ -1,6 +1,6 @@
 [build]
   base = "/"
-  command = "CI= npm install && npm run build"
+  command = "CI= npm run build"
   publish = "build"
   ignore = "git diff --quiet HEAD^ HEAD ./"
 

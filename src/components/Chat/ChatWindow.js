@@ -234,16 +234,39 @@ const ChatWindow = ({ currentUser }) => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* New messages indicator */}
+        {/* New messages indicator - Updated with animation */}
         {!isNearBottom && unreadCount > 0 && (
-          <div 
-            onClick={scrollToBottom}
-            className="fixed bottom-16 sm:bottom-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1.5 rounded-full shadow-lg cursor-pointer hover:bg-blue-700 z-40 flex items-center space-x-2 text-xs sm:text-sm"
-          >
-            <span>New messages</span>
-            <span className="bg-white text-blue-600 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-[10px] sm:text-xs font-medium">
-              {unreadCount}
-            </span>
+          <div className="relative">
+            <div 
+              onClick={scrollToBottom}
+              className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 animate-bounce-soft flex items-center space-x-2 group z-40"
+            >
+              {/* Glow effect */}
+              <div className="absolute inset-0 rounded-full bg-blue-400 blur-md opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
+              
+              {/* Content */}
+              <div className="relative flex items-center space-x-2">
+                <span className="text-sm font-medium">New messages</span>
+                <span className="bg-white text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold animate-pulse">
+                  {unreadCount}
+                </span>
+                
+                {/* Arrow icon */}
+                <svg 
+                  className="w-4 h-4 animate-bounce-slow" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
         )}
 

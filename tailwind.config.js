@@ -13,6 +13,9 @@ module.exports = {
         'fadeIn': 'fadeIn 1s ease-out',
         'float': 'float 6s ease-in-out infinite',
         'twinkle': 'twinkle 3s ease-in-out infinite',
+        'bounce-soft': 'bounce-soft 2s infinite',
+        'bounce-slow': 'bounce 3s infinite',
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         aurora: {
@@ -43,6 +46,16 @@ module.exports = {
         twinkle: {
           '0%, 100%': { opacity: 0.2, transform: 'scale(0.8)' },
           '50%': { opacity: 1, transform: 'scale(1.2)' },
+        },
+        'bounce-soft': {
+          '0%, 100%': {
+            transform: 'translateY(-5%)',
+            animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)',
+          },
+          '50%': {
+            transform: 'translateY(0)',
+            animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)',
+          },
         },
       },
       colors: {

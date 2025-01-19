@@ -66,9 +66,11 @@ const ChatWindow = ({ currentUser }) => {
   useEffect(() => {
     if (isNearBottom) {
       scrollToBottom();
-    } else {
+    } else if (messages.length > messageCountRef.current) {
+      // Only increment unread count if a new message is added, not when deleted
       setUnreadCount(prev => prev + 1);
     }
+    messageCountRef.current = messages.length;
   }, [messages]);
 
   useEffect(() => {
@@ -79,7 +81,17 @@ const ChatWindow = ({ currentUser }) => {
       orderBy('timestamp', 'asc')
     );
 
-    const unsubscribe = onSnapshot(messagesQuery, async (snapshot) => {
+    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+      // Handle both additions and deletions
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "removed") {
+          // If a message is deleted and we're showing unread count, decrease it
+          if (!isNearBottom) {
+            setUnreadCount(prev => Math.max(0, prev - 1));
+          }
+        }
+      });
+
       const messageList = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()

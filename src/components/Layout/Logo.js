@@ -25,7 +25,7 @@ const Logo = ({ size = 'normal' }) => {
       </div>
       <div className="relative">
         <span className={`${textSize} font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-aurora relative z-10`}>
-          Casonova
+          ChatLings
         </span>
         <div className="aurora-blur absolute inset-0 -inset-x-4 blur-2xl bg-gradient-to-r from-cyan-500/50 via-blue-500/50 to-purple-500/50 animate-aurora-blur"></div>
       </div>

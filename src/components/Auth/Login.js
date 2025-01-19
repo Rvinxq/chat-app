@@ -12,24 +12,43 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      console.log('Attempting login with email:', email);
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Login successful:', result.user.uid);
     } catch (err) {
+      console.error('Full error object:', err);
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
+      // Detailed error messages
       switch (err.code) {
-        case 'auth/invalid-credential':
-          setError('Invalid email or password');
+        case 'auth/invalid-email':
+          setError('Invalid email address format');
+          break;
+        case 'auth/user-disabled':
+          setError('This account has been disabled');
           break;
         case 'auth/user-not-found':
-          setError('No account found with this email');
+          setError('No account exists with this email');
           break;
         case 'auth/wrong-password':
           setError('Incorrect password');
           break;
+        case 'auth/invalid-credential':
+          setError('Invalid email or password');
+          break;
         case 'auth/too-many-requests':
-          setError('Too many failed attempts. Please try again later');
+          setError('Too many failed attempts. Please try again later or reset your password');
+          break;
+        case 'auth/network-request-failed':
+          setError('Network error. Please check your internet connection');
+          break;
+        case 'auth/internal-error':
+          setError('Server error. Please try again later');
           break;
         default:
-          setError('Failed to sign in. Please try again');
+          setError(`Login failed: ${err.message}`);
       }
+      console.error('Login error:', err.code, err.message);
     }
   };
 

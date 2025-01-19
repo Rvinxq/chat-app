@@ -46,6 +46,58 @@ const MessageList = ({ messages, currentUser, userData }) => {
     return colorMap;
   }, [messages]);
 
+  const renderMediaContent = (message) => {
+    const isImage = message.type === 'image';
+    
+    return (
+      <div className="space-y-2">
+        {/* Media type label with hyperlink */}
+        <a 
+          href={message.content} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="inline-flex items-center space-x-2 text-xs font-medium text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+        >
+          <span className="font-mono tracking-wider">
+            {isImage ? '📷 Image' : '🎥 Video'}
+          </span>
+          <svg 
+            className="w-4 h-4" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" 
+            />
+          </svg>
+        </a>
+
+        {/* Media content */}
+        {isImage ? (
+          <img 
+            src={message.content} 
+            className="max-w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity shadow-md hover:shadow-lg"
+            loading="lazy"
+            onClick={() => window.open(message.content, '_blank')}
+          />
+        ) : (
+          <video 
+            src={message.content}
+            controls
+            className="max-w-full rounded-lg shadow-md"
+            preload="metadata"
+          >
+            Your browser does not support the video tag.
+          </video>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-4">
       {messages.map((message) => {
@@ -67,29 +119,12 @@ const MessageList = ({ messages, currentUser, userData }) => {
 
               {/* Message Content */}
               <div className="bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-2">
-                {message.type === 'text' && (
+                {message.type === 'text' ? (
                   <p className="text-sm md:text-base break-words text-gray-800 dark:text-gray-200">
                     {message.content}
                   </p>
-                )}
-                {message.type === 'image' && (
-                  <img 
-                    src={message.content} 
-                    alt="Shared" 
-                    className="max-w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                    loading="lazy"
-                    onClick={() => window.open(message.content, '_blank')}
-                  />
-                )}
-                {message.type === 'video' && (
-                  <video 
-                    src={message.content}
-                    controls
-                    className="max-w-full rounded-lg"
-                    preload="metadata"
-                  >
-                    Your browser does not support the video tag.
-                  </video>
+                ) : (
+                  renderMediaContent(message)
                 )}
               </div>
             </div>

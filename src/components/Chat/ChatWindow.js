@@ -4,6 +4,7 @@ import { collection, query, orderBy, onSnapshot, addDoc, doc, getDoc, where, del
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import FileUpload from './FileUpload';
+import WelcomeModal from './WelcomeModal';
 
 const ChatWindow = ({ currentUser }) => {
   const [messages, setMessages] = useState([]);
@@ -16,6 +17,7 @@ const ChatWindow = ({ currentUser }) => {
   const chatContainerRef = useRef(null);
   const messageCountRef = useRef(0);
   const lastMessageTimeRef = useRef(Date.now());
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   // Helper function to get timestamp from 12 hours ago
   const getTwelveHoursAgo = () => {
@@ -210,80 +212,99 @@ const ChatWindow = ({ currentUser }) => {
     return () => chatContainerRef.current?.removeEventListener('scroll', handleScroll);
   }, [isNearBottom]);
 
-  return (
-    <div className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900 pt-14 sm:pt-16">
-      {/* Header */}
-      <div className="fixed top-14 sm:top-16 left-0 right-0 px-4 py-2 sm:py-3 bg-white dark:bg-gray-800 shadow-sm z-40">
-        <h2 className="text-base sm:text-lg font-semibold">Public Chat</h2>
-        <p className="text-[10px] sm:text-xs text-gray-500">Messages are end-to-end encrypted</p>
-      </div>
+  useEffect(() => {
+    // Check if user has seen the welcome message
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+    if (!hasSeenWelcome) {
+      setShowWelcomeModal(true);
+    }
+  }, []);
 
-      {/* Messages area */}
-      <div className="flex-1 overflow-hidden flex flex-col">
-        <div 
-          ref={chatContainerRef}
-          className="flex-1 overflow-y-auto px-3 md:px-4 py-4 space-y-3 mb-[120px] sm:mb-[140px]"
-        >
-          <MessageList 
-            messages={messages} 
-            currentUser={currentUser}
-            userData={userData}
-          />
-          <div ref={messagesEndRef} />
+  const handleCloseWelcomeModal = () => {
+    setShowWelcomeModal(false);
+    localStorage.setItem('hasSeenWelcome', 'true');
+  };
+
+  return (
+    <>
+      <div className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900 pt-14 sm:pt-16">
+        {/* Header */}
+        <div className="fixed top-14 sm:top-16 left-0 right-0 px-4 py-2 sm:py-3 bg-white dark:bg-gray-800 shadow-sm z-40">
+          <h2 className="text-base sm:text-lg font-semibold">Public Chat</h2>
+          <p className="text-[10px] sm:text-xs text-gray-500">Messages are end-to-end encrypted</p>
         </div>
 
-        {/* New messages indicator */}
-        {!isNearBottom && unreadCount > 0 && (
-          <div className="fixed bottom-[130px] sm:bottom-[150px] left-0 right-0 flex justify-center z-40">
-            <div 
-              onClick={scrollToBottom}
-              className="bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 animate-bounce-soft flex items-center space-x-2 group z-40"
-            >
-              {/* Glow effect */}
-              <div className="absolute inset-0 rounded-full bg-blue-400 blur-md opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-              
-              {/* Content */}
-              <div className="relative flex items-center space-x-2">
-                <span className="text-sm font-medium">New messages</span>
-                <span className="bg-white text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold animate-pulse">
-                  {unreadCount}
-                </span>
+        {/* Messages area */}
+        <div className="flex-1 overflow-hidden flex flex-col">
+          <div 
+            ref={chatContainerRef}
+            className="flex-1 overflow-y-auto px-3 md:px-4 py-4 space-y-3 mb-[120px] sm:mb-[140px]"
+          >
+            <MessageList 
+              messages={messages} 
+              currentUser={currentUser}
+              userData={userData}
+            />
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* New messages indicator */}
+          {!isNearBottom && unreadCount > 0 && (
+            <div className="fixed bottom-[130px] sm:bottom-[150px] left-0 right-0 flex justify-center z-40">
+              <div 
+                onClick={scrollToBottom}
+                className="bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 animate-bounce-soft flex items-center space-x-2 group z-40"
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 rounded-full bg-blue-400 blur-md opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
                 
-                {/* Arrow icon */}
-                <svg 
-                  className="w-4 h-4 animate-bounce-slow" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                  />
-                </svg>
+                {/* Content */}
+                <div className="relative flex items-center space-x-2">
+                  <span className="text-sm font-medium">New messages</span>
+                  <span className="bg-white text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold animate-pulse">
+                    {unreadCount}
+                  </span>
+                  
+                  {/* Arrow icon */}
+                  <svg 
+                    className="w-4 h-4 animate-bounce-slow" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Input area - fixed at bottom */}
-        <div className="fixed bottom-0 left-0 right-0 p-2 md:p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-40">
-          <div className="max-w-4xl mx-auto space-y-2">
-            <FileUpload 
-              onFileUpload={handleFileUpload} 
-              disabled={isOnCooldown}
-            />
-            <MessageInput 
-              onSendMessage={handleSendMessage} 
-              disabled={isOnCooldown}
-              cooldownTime={cooldownTime}
-            />
+          {/* Input area - fixed at bottom */}
+          <div className="fixed bottom-0 left-0 right-0 p-2 md:p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-40">
+            <div className="max-w-4xl mx-auto space-y-2">
+              <FileUpload 
+                onFileUpload={handleFileUpload} 
+                disabled={isOnCooldown}
+              />
+              <MessageInput 
+                onSendMessage={handleSendMessage} 
+                disabled={isOnCooldown}
+                cooldownTime={cooldownTime}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <WelcomeModal 
+        isOpen={showWelcomeModal} 
+        onClose={handleCloseWelcomeModal} 
+      />
+    </>
   );
 };
 

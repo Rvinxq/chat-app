@@ -30,12 +30,41 @@ const MessageList = ({ messages, currentUser, userData }) => {
 
   const handleDelete = async (messageId) => {
     try {
-      await deleteDoc(doc(db, 'public-chat', messageId));
-      toast.success('Message deleted');
+      // Reference the specific message document
+      const messageRef = doc(db, 'public-chat', messageId);
+      
+      // Add loading state
+      toast.loading('Deleting message...');
+      
+      // Delete the message
+      await deleteDoc(messageRef);
+      
+      // Show success message
+      toast.dismiss(); // Remove loading toast
+      toast.success('Message deleted successfully', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#10B981',
+          color: '#fff',
+          borderRadius: '10px',
+        },
+      });
+      
+      // Clear selection
       setSelectedMessage(null);
     } catch (error) {
       console.error('Error deleting message:', error);
-      toast.error('Failed to delete message');
+      toast.dismiss(); // Remove loading toast
+      toast.error('Failed to delete message. Please try again.', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#EF4444',
+          color: '#fff',
+          borderRadius: '10px',
+        },
+      });
     }
   };
 

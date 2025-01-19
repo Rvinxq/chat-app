@@ -9,6 +9,7 @@ import ChatWindow from './components/Chat/ChatWindow';
 import Header from './components/Layout/Header';
 import NotFound from './components/404/NotFound';
 import { ThemeProvider } from './context/ThemeContext';
+import VerifyEmail from './components/Auth/VerifyEmail';
 
 function App() {
   const [user, loading] = useAuthState(auth);
@@ -51,6 +52,7 @@ function App() {
               path="/signup"
               element={!user ? <SignUp /> : <Navigate to="/" />}
             />
+            <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

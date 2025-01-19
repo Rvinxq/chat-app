@@ -212,15 +212,15 @@ const ChatWindow = ({ currentUser }) => {
   };
 
   return (
-    <div className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900 pt-14 sm:pt-16">
+    <div className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="fixed top-14 sm:top-16 left-0 right-0 px-4 py-2 sm:py-3 bg-white dark:bg-gray-800 shadow-sm z-40">
+      <div className="fixed top-14 sm:top-16 left-0 right-0 px-4 py-2 sm:py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-sm z-30">
         <h2 className="text-base sm:text-lg font-semibold">Public Chat</h2>
         <p className="text-[10px] sm:text-xs text-gray-500">Messages are end-to-end encrypted</p>
       </div>
 
       {/* Messages area */}
-      <div className="flex-1 overflow-hidden flex flex-col">
+      <div className="flex-1 overflow-hidden flex flex-col pt-14 sm:pt-16">
         <div 
           ref={chatContainerRef}
           className="flex-1 overflow-y-auto px-3 md:px-4 py-4 space-y-3 mb-[120px] sm:mb-[140px]"

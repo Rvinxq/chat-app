@@ -219,11 +219,11 @@ const ChatWindow = ({ currentUser }) => {
         <p className="text-[10px] sm:text-xs text-gray-500">Messages are end-to-end encrypted</p>
       </div>
 
-      {/* Messages area - adjusted top padding to account for fixed header */}
-      <div className="flex-1 overflow-hidden flex flex-col mt-14 sm:mt-16">
+      {/* Messages area */}
+      <div className="flex-1 overflow-hidden flex flex-col">
         <div 
           ref={chatContainerRef}
-          className="flex-1 overflow-y-auto px-3 md:px-4 py-4 space-y-3"
+          className="flex-1 overflow-y-auto px-3 md:px-4 py-4 space-y-3 mb-[120px] sm:mb-[140px]"
           onScroll={handleScroll}
         >
           <MessageList 
@@ -234,12 +234,12 @@ const ChatWindow = ({ currentUser }) => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* New messages indicator - Updated with animation */}
+        {/* New messages indicator */}
         {!isNearBottom && unreadCount > 0 && (
-          <div className="relative">
+          <div className="fixed bottom-[130px] sm:bottom-[150px] left-0 right-0 flex justify-center z-40">
             <div 
               onClick={scrollToBottom}
-              className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 animate-bounce-soft flex items-center space-x-2 group z-40"
+              className="bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 animate-bounce-soft flex items-center space-x-2 group z-40"
             >
               {/* Glow effect */}
               <div className="absolute inset-0 rounded-full bg-blue-400 blur-md opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
@@ -270,8 +270,8 @@ const ChatWindow = ({ currentUser }) => {
           </div>
         )}
 
-        {/* Input area */}
-        <div className="p-2 md:p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        {/* Input area - fixed at bottom */}
+        <div className="fixed bottom-0 left-0 right-0 p-2 md:p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-40">
           <div className="max-w-4xl mx-auto space-y-2">
             <FileUpload 
               onFileUpload={handleFileUpload} 

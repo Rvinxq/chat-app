@@ -236,10 +236,10 @@ const ChatWindow = ({ currentUser }) => {
 
         {/* New messages indicator */}
         {!isNearBottom && unreadCount > 0 && (
-          <div className="fixed bottom-[90px] sm:bottom-[100px] left-0 right-0 flex justify-center pointer-events-none z-40">
+          <div className="fixed bottom-[130px] sm:bottom-[150px] left-0 right-0 flex justify-center z-40">
             <div 
               onClick={scrollToBottom}
-              className="pointer-events-auto transform hover:scale-105 bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 animate-bounce-soft flex items-center space-x-2 group"
+              className="bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 animate-bounce-soft flex items-center space-x-2 group z-40"
             >
               {/* Glow effect */}
               <div className="absolute inset-0 rounded-full bg-blue-400 blur-md opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>

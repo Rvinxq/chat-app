@@ -280,6 +280,7 @@ const ChatWindow = ({ currentUser }) => {
             <MessageInput 
               onSendMessage={handleSendMessage} 
               disabled={isOnCooldown}
+              cooldownTime={cooldownTime}
             />
           </div>
         </div>

@@ -1,38 +1,43 @@
 import React, { useState } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
-const MessageInput = ({ onSendMessage, disabled }) => {
+const MessageInput = ({ onSendMessage, disabled, cooldownTime }) => {
   const [message, setMessage] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (message.trim() && !disabled) {
-      onSendMessage(message);
+      onSendMessage(message.trim());
       setMessage('');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type a message..."
-        className="flex-1 h-10 md:h-12 px-3 md:px-4 text-sm rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-        disabled={disabled}
-      />
-      <button
-        type="submit"
-        className={`h-10 md:h-12 w-10 md:w-12 flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-          disabled 
-            ? 'bg-gray-300 dark:bg-gray-700' 
-            : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'
-        }`}
-        disabled={disabled}
-      >
-        <PaperAirplaneIcon className="h-5 w-5 text-white transform rotate-90" />
-      </button>
+    <form onSubmit={handleSubmit} className="relative">
+      {disabled && cooldownTime > 0 && (
+        <div className="absolute -top-12 left-0 right-0 bg-red-500 text-white px-4 py-2 rounded-lg text-sm text-center animate-fadeIn">
+          Slow down! You can send messages again in {cooldownTime} seconds
+        </div>
+      )}
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder={disabled ? "Timeout active..." : "Type a message..."}
+          className={`flex-1 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+            disabled ? 'text-red-500' : ''
+          }`}
+          disabled={disabled}
+        />
+        <button
+          type="submit"
+          disabled={disabled || !message.trim()}
+          className="p-2 bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+        >
+          <PaperAirplaneIcon className="h-5 w-5 text-white transform rotate-90" />
+        </button>
+      </div>
     </form>
   );
 };

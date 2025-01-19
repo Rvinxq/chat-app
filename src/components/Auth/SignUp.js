@@ -88,20 +88,46 @@ const SignUp = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-blue-700 to-purple-800">
       <div className="max-w-md w-full mx-4">
         {verificationSent ? (
-          <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-8 text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">Verify Your Email</h2>
-            <p className="text-blue-100 mb-4">
-              We've sent a verification link to {email}. Please check your inbox and verify your email to continue.
-            </p>
-            <p className="text-blue-100/80 text-sm">
-              Didn't receive the email? Check your spam folder or{' '}
-              <button 
-                onClick={() => sendEmailVerification(auth.currentUser)}
-                className="text-blue-300 hover:text-blue-200"
-              >
-                click here to resend
-              </button>
-            </p>
+          <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-8">
+            <div className="text-center space-y-6">
+              {/* Email Icon */}
+              <div className="flex justify-center">
+                <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center">
+                  <svg className="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold text-white">Check Your Email</h2>
+                <p className="text-blue-100">
+                  We've sent a verification link to:
+                </p>
+                <p className="text-lg font-medium text-blue-200">
+                  {email}
+                </p>
+              </div>
+
+              <div className="space-y-4 pt-4">
+                <p className="text-sm text-blue-100">
+                  Click the link in the email to verify your account. If you don't see the email, check your spam folder.
+                </p>
+
+                <button 
+                  onClick={() => sendEmailVerification(auth.currentUser)}
+                  className="px-6 py-2.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 rounded-xl transition-all duration-200 border border-blue-400/30"
+                >
+                  Resend Verification Email
+                </button>
+
+                <div className="pt-4 text-sm text-blue-200/80">
+                  <Link to="/login" className="hover:text-blue-200 underline">
+                    Back to Login
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">

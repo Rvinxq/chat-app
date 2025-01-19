@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './utils/firebase';
 import LoadingScreen from './components/Layout/LoadingScreen';
-import disableDevTools from './utils/devToolsProtection';
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
 import ChatWindow from './components/Chat/ChatWindow';
@@ -17,13 +16,8 @@ function App() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
-    disableDevTools();
-  }, []);
-
-  useEffect(() => {
     if (!loading && isInitialLoad) {
-      // Start fading out the loading screen when auth is ready
-      const minLoadTime = 2000; // Minimum loading time of 2 seconds
+      const minLoadTime = 2000;
       const loadStartTime = Date.now();
       
       const remainingTime = Math.max(0, minLoadTime - (Date.now() - loadStartTime));

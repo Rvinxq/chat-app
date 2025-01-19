@@ -85,7 +85,6 @@ const ChatWindow = ({ currentUser }) => {
       // Handle both additions and deletions
       snapshot.docChanges().forEach((change) => {
         if (change.type === "removed") {
-          // If a message is deleted and we're showing unread count, decrease it
           if (!isNearBottom) {
             setUnreadCount(prev => Math.max(0, prev - 1));
           }
@@ -98,40 +97,43 @@ const ChatWindow = ({ currentUser }) => {
       }));
       setMessages(messageList);
 
-      // Fetch user data for all unique senders
-      const userIds = [...new Set(messageList.map(msg => msg.senderId))];
-      const userDataPromises = userIds.map(async userId => {
-        if (!userId) return null;
-        const userDocRef = doc(db, 'users', userId);
-        try {
-          const userDocSnap = await getDoc(userDocRef);
-          if (userDocSnap.exists()) {
-            return {
-              userId,
-              username: userDocSnap.data().username,
-              ...userDocSnap.data()
-            };
-          }
-          return null;
-        } catch (error) {
-          console.error(`Error fetching user ${userId}:`, error);
-          return null;
-        }
-      });
-
-      try {
-        const users = (await Promise.all(userDataPromises)).filter(Boolean);
-        const userDataMap = {};
-        users.forEach(user => {
-          if (user && user.userId) {
-            userDataMap[user.userId] = user;
+      // Handle user data fetching separately
+      const fetchUserData = async () => {
+        const userIds = [...new Set(messageList.map(msg => msg.senderId))];
+        const userDataPromises = userIds.map(async userId => {
+          if (!userId) return null;
+          const userDocRef = doc(db, 'users', userId);
+          try {
+            const userDocSnap = await getDoc(userDocRef);
+            if (userDocSnap.exists()) {
+              return {
+                userId,
+                username: userDocSnap.data().username,
+                ...userDocSnap.data()
+              };
+            }
+            return null;
+          } catch (error) {
+            console.error(`Error fetching user ${userId}:`, error);
+            return null;
           }
         });
-        console.log('User data map:', userDataMap); // Debug log
-        setUserData(userDataMap);
-      } catch (error) {
-        console.error('Error processing user data:', error);
-      }
+
+        try {
+          const users = (await Promise.all(userDataPromises)).filter(Boolean);
+          const userDataMap = {};
+          users.forEach(user => {
+            if (user && user.userId) {
+              userDataMap[user.userId] = user;
+            }
+          });
+          setUserData(userDataMap);
+        } catch (error) {
+          console.error('Error processing user data:', error);
+        }
+      };
+
+      fetchUserData();
     });
 
     return () => unsubscribe();

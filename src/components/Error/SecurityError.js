@@ -11,16 +11,26 @@ const SecurityError = () => {
       window.history.pushState(null, '', window.location.href);
     };
 
-    // Clear any stored data
+    // Clear all storage
     localStorage.clear();
     sessionStorage.clear();
+    
+    // Clear cookies
+    document.cookie.split(";").forEach(cookie => {
+      document.cookie = cookie
+        .replace(/^ +/, "")
+        .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
+    });
 
-    // Force reload after 3 seconds
+    // Force reload with clean slate after 3 seconds
     const timer = setTimeout(() => {
-      window.location.href = '/';
+      window.location.href = '/?blocked=true';
     }, 3000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      window.onpopstate = null;
+    };
   }, []);
 
   return (

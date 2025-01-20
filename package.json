@@ -7,7 +7,7 @@
     "bcryptjs": "^2.4.3",
     "cloudinary-react": "^1.8.1",
     "crypto-js": "^4.1.1",
-    "dompurify": "^3.2.3",
+    "dompurify": "^3.0.8",
     "firebase": "^10.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -19,9 +19,9 @@
     "tailwindcss": "^3.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build && node scripts/build.js",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -45,15 +45,20 @@
   "devDependencies": {
     "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
-    "javascript-obfuscator": "^4.1.1",
-    "postcss": "^8.4.32"
+    "javascript-obfuscator": "^4.0.0",
+    "postcss": "^8.4.32",
+    "react-app-rewired": "^2.2.1"
   },
+  "config-overrides-path": "config-overrides.js",
   "build": {
     "headers": {
       "/**": {
+        "Content-Security-Policy": "default-src 'self' https://*.firebaseio.com https://*.firebase.com https://*.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.firebaseio.com https://*.firebase.com https://*.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.cloudinary.com; connect-src 'self' wss://*.firebaseio.com https://*.firebase.com https://*.googleapis.com https://firebase.googleapis.com https://*.cloudfunctions.net https://*.cloudinary.com; frame-src 'self' https://*.firebaseapp.com; font-src 'self' data:;",
         "X-Frame-Options": "DENY",
         "X-XSS-Protection": "1; mode=block",
-        "X-Content-Type-Options": "nosniff"
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "no-referrer",
+        "Permissions-Policy": "geolocation=(), camera=(), microphone=()"
       }
     }
   }

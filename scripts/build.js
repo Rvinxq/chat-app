@@ -26,17 +26,37 @@ const obfuscationOptions = {
   unicodeEscapeSequence: false
 };
 
-// Obfuscate the build files
 const obfuscateBuild = () => {
   const buildDir = path.join(__dirname, '../build');
-  const files = fs.readdirSync(buildDir);
-  
-  files.forEach(file => {
+  const jsDir = path.join(buildDir, 'static/js');
+
+  // Read all files in the js directory
+  fs.readdirSync(jsDir).forEach(file => {
     if (file.endsWith('.js')) {
-      const filePath = path.join(buildDir, file);
+      const filePath = path.join(jsDir, file);
+      console.log(`Obfuscating: ${file}`);
+      
       const code = fs.readFileSync(filePath, 'utf8');
       const obfuscatedCode = JavaScriptObfuscator.obfuscate(code, obfuscationOptions);
+      
+      // Write the obfuscated code back
       fs.writeFileSync(filePath, obfuscatedCode.getObfuscatedCode());
+      
+      // Remove source maps
+      const mapFile = `${filePath}.map`;
+      if (fs.existsSync(mapFile)) {
+        fs.unlinkSync(mapFile);
+      }
+    }
+  });
+
+  // Remove source map references from js files
+  fs.readdirSync(jsDir).forEach(file => {
+    if (file.endsWith('.js')) {
+      const filePath = path.join(jsDir, file);
+      let content = fs.readFileSync(filePath, 'utf8');
+      content = content.replace(/\/\/# sourceMappingURL=.*$/gm, '');
+      fs.writeFileSync(filePath, content);
     }
   });
 };

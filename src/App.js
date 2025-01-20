@@ -12,6 +12,8 @@ import { ThemeProvider } from './context/ThemeContext';
 import VerifyEmail from './components/Auth/VerifyEmail';
 import { Toaster } from 'react-hot-toast';
 import AdminPage from './components/Admin/AdminPage';
+import { detectDevTools } from './utils/devToolsDetector';
+import SecurityError from './components/Error/SecurityError';
 
 // Security utility function
 const secureApp = () => {
@@ -53,19 +55,17 @@ function App() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
-    secureApp();
-    
-    // Additional protection against dev tools
-    const detectDevTools = () => {
-      const widthThreshold = window.outerWidth - window.innerWidth > 160;
-      const heightThreshold = window.outerHeight - window.innerHeight > 160;
-      if (widthThreshold || heightThreshold) {
-        document.body.innerHTML = 'Dev tools detected!';
-      }
-    };
+    // Start dev tools detection
+    const detector = detectDevTools();
+    detector.startMonitoring();
 
-    window.addEventListener('resize', detectDevTools);
-    return () => window.removeEventListener('resize', detectDevTools);
+    // Additional protection
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+    
+    // Disable source view
+    document.addEventListener('keypress', (e) => {
+      if (e.ctrlKey && e.key === 'u') e.preventDefault();
+    });
   }, []);
 
   useEffect(() => {
@@ -110,17 +110,7 @@ function App() {
               path="/admin"
               element={user ? <AdminPage /> : <Navigate to="/login" />}
             />
-            <Route 
-              path="/error" 
-              element={
-                <div className="min-h-screen flex items-center justify-center bg-red-600">
-                  <div className="text-white text-center">
-                    <h1 className="text-4xl font-bold mb-4">Access Denied</h1>
-                    <p>Developer tools are not allowed on this site.</p>
-                  </div>
-                </div>
-              } 
-            />
+            <Route path="/error" element={<SecurityError />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

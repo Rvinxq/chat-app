@@ -6,55 +6,43 @@ export const detectDevTools = () => {
     }
   };
 
-  // More reliable dev tools detection
+  // More reliable dev tools detection with less false positives
   const checkDevTools = () => {
     try {
-      // Method 1: Size comparison
-      const widthThreshold = window.outerWidth - window.innerWidth > 160;
-      const heightThreshold = window.outerHeight - window.innerHeight > 160;
+      // Method 1: More accurate size comparison
+      const widthThreshold = window.outerWidth - window.innerWidth > 200;
+      const heightThreshold = window.outerHeight - window.innerHeight > 200;
+      const isResized = widthThreshold && heightThreshold;
 
-      // Method 2: Dev tools element detection
-      const devToolsElement = window.document.getElementById('__react-dev-tools-hook__');
-      
-      // Method 3: Check for dev tools object
-      const isDevToolsOpen = !!(window.__REACT_DEVTOOLS_GLOBAL_HOOK__ || 
+      // Method 2: Dev tools object check
+      const hasDevTools = !!(
         window.Firebug || 
-        window.chrome?.webstore);
+        window.__REACT_DEVTOOLS_GLOBAL_HOOK__?.renderers?.size > 0
+      );
 
-      // Method 4: Performance timing
-      const startTime = performance.now();
-      console.profile();
-      console.profileEnd();
-      const endTime = performance.now();
-      const timingCheck = endTime - startTime > 20;
-
-      // Method 5: RegExp toString check
-      const regexCheck = /./;
-      regexCheck.toString = () => {
-        redirectToError();
-        return 'devtools';
-      };
-      console.log(regexCheck);
-
-      if (widthThreshold || heightThreshold || devToolsElement || isDevToolsOpen || timingCheck) {
+      if (isResized || hasDevTools) {
         redirectToError();
         return true;
       }
     } catch (e) {
-      // If any error occurs during checks, assume dev tools might be open
-      redirectToError();
-      return true;
+      // Only redirect on specific errors
+      if (e.toString().includes('devtools')) {
+        redirectToError();
+        return true;
+      }
     }
     return false;
   };
 
   // Less aggressive monitoring
   const startMonitoring = () => {
-    // Initial check for pre-opened dev tools
-    if (checkDevTools()) return;
+    // Initial check with delay to avoid false positives
+    setTimeout(() => {
+      if (checkDevTools()) return;
+    }, 1000);
 
-    // Continuous monitoring
-    const interval = setInterval(checkDevTools, 1000);
+    // Less frequent monitoring
+    const interval = setInterval(checkDevTools, 2000);
 
     // Keyboard shortcuts prevention
     document.addEventListener('keydown', (e) => {
@@ -71,7 +59,6 @@ export const detectDevTools = () => {
     // Prevent right-click
     document.addEventListener('contextmenu', (e) => {
       e.preventDefault();
-      redirectToError();
     });
 
     // Override common dev tools detection evasion

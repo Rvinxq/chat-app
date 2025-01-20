@@ -23,15 +23,8 @@
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
     Access-Control-Allow-Headers = "*"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = """
-      default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;
-      img-src * data: blob: 'unsafe-inline';
-      connect-src * 'unsafe-inline';
-      frame-src * 'unsafe-inline';
-      script-src * 'unsafe-inline' 'unsafe-eval';
-      style-src * 'unsafe-inline';
-    """
+    Referrer-Policy = "no-referrer"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     Permissions-Policy = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
     Cross-Origin-Embedder-Policy = "require-corp"

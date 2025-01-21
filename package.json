@@ -46,6 +46,7 @@
     "autoprefixer": "^10.4.16",
     "babel-loader": "^9.2.1",
     "cross-env": "^7.0.3",
+    "javascript-obfuscator": "^4.1.1",
     "postcss": "^8.4.32",
     "react-app-rewired": "^2.2.1",
     "terser-webpack-plugin": "^5.3.11",

@@ -4,11 +4,42 @@ import { auth, db } from '../../utils/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { toast } from 'react-hot-toast';
 import DOMPurify from 'dompurify';
-import { hash } from 'bcryptjs';
+import { hash, compare } from 'bcryptjs';
 
-const ADMIN_EMAIL = 'SwarnabhaX@gmail.com';
-// Store hashed password in environment variable
-const ADMIN_PASSWORD_HASH = process.env.REACT_APP_ADMIN_PASSWORD_HASH;
+// Obfuscate sensitive data
+const _0x1a2b = {
+  e: atob(process.env.REACT_APP_ADMIN_EMAIL),
+  h: process.env.REACT_APP_ADMIN_PASSWORD_HASH,
+  k: process.env.REACT_APP_SECURITY_KEY
+};
+
+// Prevent console access
+const disableDevTools = () => {
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+  document.addEventListener('keydown', (e) => {
+    if (
+      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+      (e.key === 'F12')
+    ) {
+      e.preventDefault();
+    }
+  });
+  
+  // Disable right-click
+  window.addEventListener('contextmenu', (e) => e.preventDefault());
+  
+  // Clear console
+  console.clear();
+  
+  // Override console methods
+  const noop = () => undefined;
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
+    console.log = noop;
+    console.info = noop;
+    console.warn = noop;
+    console.error = noop;
+  }
+};
 
 const AdminPage = () => {
   const [email, setEmail] = useState('');
@@ -18,6 +49,26 @@ const AdminPage = () => {
   const [isBlocked, setIsBlocked] = useState(false);
   const [lastAttemptTime, setLastAttemptTime] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    disableDevTools();
+    
+    // Additional security measures
+    if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
+      navigate('/');
+    }
+
+    const detectDevTools = () => {
+      const widthThreshold = window.outerWidth - window.innerWidth > 160;
+      const heightThreshold = window.outerHeight - window.innerHeight > 160;
+      if (widthThreshold || heightThreshold) {
+        navigate('/');
+      }
+    };
+
+    window.addEventListener('resize', detectDevTools);
+    return () => window.removeEventListener('resize', detectDevTools);
+  }, [navigate]);
 
   useEffect(() => {
     // Check if user is blocked
@@ -80,10 +131,13 @@ const AdminPage = () => {
         return;
       }
 
-      // Hash password for comparison
-      const hashedPassword = await hash(sanitizedPassword, 10);
+      const verifyCredentials = async () => {
+        const key = _0x1a2b.k;
+        const email = _0x1a2b.e;
+        return sanitizedEmail === email && await compare(sanitizedPassword, _0x1a2b.h);
+      };
 
-      if (sanitizedEmail === ADMIN_EMAIL && hashedPassword === ADMIN_PASSWORD_HASH) {
+      if (await verifyCredentials()) {
         // Log successful login attempt
         console.log('Admin login successful:', new Date().toISOString());
         
@@ -170,4 +224,6 @@ const AdminPage = () => {
   );
 };
 
+// Prevent component from being modified
+Object.freeze(AdminPage);
 export default AdminPage; 

@@ -11,7 +11,6 @@ import NotFound from './components/404/NotFound';
 import { ThemeProvider } from './context/ThemeContext';
 import VerifyEmail from './components/Auth/VerifyEmail';
 import { Toaster } from 'react-hot-toast';
-import AdminPage from './components/Admin/AdminPage';
 import { detectDevTools } from './utils/devToolsDetector';
 import SecurityError from './components/Error/SecurityError';
 
@@ -106,10 +105,6 @@ function App() {
               element={!user ? <SignUp /> : <Navigate to="/" />}
             />
             <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route
-              path="/admin"
-              element={user ? <AdminPage /> : <Navigate to="/login" />}
-            />
             <Route path="/error" element={<SecurityError />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

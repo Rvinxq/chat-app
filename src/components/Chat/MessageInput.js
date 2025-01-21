@@ -1,12 +1,26 @@
 import React, { useState } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { handleAdminCommand } from '../../utils/adminCommands';
+import { db } from '../../utils/firebase';
 
-const MessageInput = ({ onSendMessage, disabled, cooldownTime }) => {
+const MessageInput = ({ onSendMessage, disabled, cooldownTime, currentUser }) => {
   const [message, setMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim() && !disabled) {
+      // Check for admin commands
+      if (message.startsWith('/')) {
+        const response = await handleAdminCommand(message, currentUser, db);
+        if (response) {
+          // Show admin command response
+          onSendMessage(`System: ${response}`, 'system');
+          setMessage('');
+          return;
+        }
+      }
+      
+      // Regular message
       onSendMessage(message.trim());
       setMessage('');
     }

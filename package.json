@@ -49,6 +49,7 @@
     "javascript-obfuscator": "^4.1.1",
     "postcss": "^8.4.32",
     "react-app-rewired": "^2.2.1",
+    "sass": "^1.83.4",
     "terser-webpack-plugin": "^5.3.11",
     "webpack": "^5.97.1"
   },

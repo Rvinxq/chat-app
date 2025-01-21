@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-const WelcomeModal = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+const WelcomeModal = ({ onClose }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+    if (!hasSeenWelcome) {
+      setIsVisible(true);
+    }
+  }, []);
+
+  const handleClose = () => {
+    localStorage.setItem('hasSeenWelcome', 'true');
+    setIsVisible(false);
+    onClose();
+  };
+
+  if (!isVisible) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleClose} />
       
       {/* Modal */}
       <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg transform transition-all">
@@ -72,7 +87,7 @@ const WelcomeModal = ({ isOpen, onClose }) => {
           {/* Action buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition-all duration-200"
             >
               I understand, let's chat!

@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "GENERATE_SOURCEMAP=false react-app-rewired build && node scripts/build.js",
+    "build": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build && node scripts/build.js",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
@@ -43,6 +43,9 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@babel/preset-react": "^7.23.0",
     "autoprefixer": "^10.4.16",
     "babel-loader": "^9.2.1",
     "cross-env": "^7.0.3",
